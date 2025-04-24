@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dancing Maple Leaf</title>
+    <title>Dancing Maple Leaf (JS Animation)</title>
     <style>
         body {
             display: flex;
@@ -17,14 +17,18 @@
         .maple-leaf {
             width: 150px;
             height: 150px;
-            position: relative;
-            animation: dance 3s ease-in-out infinite;
+            /* Remove CSS animation property */
+            /* animation: dance 3s ease-in-out infinite; */
+            /* Ensure transform-origin is center for rotations */
+            transform-origin: 50% 50%;
         }
 
         .maple-leaf path {
             fill: #c41e3a; /* Red maple leaf color */
         }
 
+        /* Remove CSS keyframes as JS will handle the animation */
+        /*
         @keyframes dance {
             0% { transform: rotate(0deg) scale(1); }
             25% { transform: rotate(15deg) scale(1.1); }
@@ -32,6 +36,7 @@
             75% { transform: rotate(-15deg) scale(1.1); }
             100% { transform: rotate(0deg) scale(1); }
         }
+        */
     </style>
 </head>
 <body>
@@ -41,17 +46,85 @@
 
     <script>
         const leaf = document.querySelector('.maple-leaf');
-        
+        const animationDuration = 3000; // 3 seconds in milliseconds
+        let startTime = null;
+        let animationFrameId = null;
+        let isHovered = false;
+
+        function animate(timestamp) {
+            if (!startTime) startTime = timestamp;
+            const elapsedTime = timestamp - startTime;
+            const progress = (elapsedTime % animationDuration) / animationDuration; // Progress from 0 to 1 over the duration
+
+            let rotate = 0;
+            let scale = 1;
+
+            // Calculate transform based on animation progress (replicating CSS keyframes linearly)
+            if (progress < 0.25) {
+                // 0% to 25%: Rotate 0 to 15, Scale 1 to 1.1
+                const segmentProgress = progress / 0.25;
+                rotate = 0 + segmentProgress * 15;
+                scale = 1 + segmentProgress * 0.1;
+            } else if (progress < 0.5) {
+                // 25% to 50%: Rotate 15 to 0, Scale 1.1 to 1
+                const segmentProgress = (progress - 0.25) / 0.25;
+                rotate = 15 - segmentProgress * 15;
+                scale = 1.1 - segmentProgress * 0.1;
+            } else if (progress < 0.75) {
+                // 50% to 75%: Rotate 0 to -15, Scale 1 to 1.1
+                const segmentProgress = (progress - 0.5) / 0.25;
+                rotate = 0 - segmentProgress * 15;
+                scale = 1 + segmentProgress * 0.1;
+            } else { // progress <= 1
+                // 75% to 100%: Rotate -15 to 0, Scale 1.1 to 1
+                const segmentProgress = (progress - 0.75) / 0.25;
+                rotate = -15 + segmentProgress * 15;
+                scale = 1.1 - segmentProgress * 0.1;
+            }
+
+            // Apply the calculated transform
+            leaf.style.transform = `rotate(${rotate}deg) scale(${scale})`;
+
+            // Continue the animation loop if not hovered
+            if (!isHovered) {
+                animationFrameId = requestAnimationFrame(animate);
+            }
+        }
+
+        function startAnimation() {
+            if (!animationFrameId) {
+                 startTime = null; // Reset start time to begin the animation cycle from the start
+                 isHovered = false; // Ensure it's not considered hovered when starting animation
+                 animationFrameId = requestAnimationFrame(animate);
+            }
+        }
+
+        function stopAnimation() {
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
+            }
+        }
+
+        // Mouseover/mouseout event listeners
         leaf.addEventListener('mouseover', () => {
-            leaf.style.animation = 'none';
-            leaf.style.transform = 'scale(1.2) rotate(180deg)';
-            leaf.style.transition = 'transform 0.5s ease';
+            isHovered = true; // Set hover state
+            stopAnimation(); // Stop the dancing animation loop
+            leaf.style.transition = 'transform 0.5s ease'; // Add smooth transition for the hover effect
+            leaf.style.transform = 'scale(1.2) rotate(180deg)'; // Apply the hover transform
         });
 
         leaf.addEventListener('mouseout', () => {
-            leaf.style.animation = 'dance 3s ease-in-out infinite';
-            leaf.style.transform = 'none';
+            isHovered = false; // Unset hover state
+            // Remove the transition so the return to dance isn't a slow transition from hover state
+            leaf.style.transition = '';
+            // Restart the dance animation
+            startAnimation();
         });
+
+        // Start the initial JavaScript animation when the script loads
+        startAnimation();
+
     </script>
 </body>
 </html>
