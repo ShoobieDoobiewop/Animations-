@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dancing Maple Leaf</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #f0f0f0;
+            margin: 0;
+        }
+
+        .maple-leaf {
+            width: 100px;
+            height: 100px;
+            position: relative;
+            animation: dance 3s ease-in-out infinite;
+        }
+
+        .maple-leaf path {
+            fill: #c41e3a; /* Red maple leaf color */
+        }
+
+        @keyframes dance {
+            0% {
+                transform: rotate(0deg) scale(1);
+            }
+            25% {
+                transform: rotate(15deg) scale(1.1);
+            }
+            50% {
+                transform: rotate(0deg) scale(1);
+            }
+            75% {
+                transform: rotate(-15deg) scale(1.1);
+            }
+            100% {
+                transform: rotate(0deg) scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <svg class="maple-leaf" viewBox="0 0 512 512">
+        <path d="M256,0C266.5,72,313,126,384,136c-71,10-117.5,64-128,136c-10.5-72-57-126-128-136c71-10,117.5-64,128-136 M398.5,407.5c-10-71-56.5-124.5-127.5-134.5c71-10,117.5-64,128-136c10.5,72,57,126,128,136c-71,10-117.5,63.5-128,134.5 M256,512c-10.5-72-57-126-128-136c71-10,117.5-64,128-136c10.5,72,57,126,128,136c-71,10-117.5,64-128,136"/>
+    </svg>
+
+    <script>
+        // Add interactive hover effect
+        const leaf = document.querySelector('.maple-leaf');
+        
+        leaf.addEventListener('mouseover', () => {
+            leaf.style.animation = 'none';
+            leaf.style.transform = 'scale(1.2) rotate(180deg)';
+            leaf.style.transition = 'transform 0.5s ease';
+        });
+
+        leaf.addEventListener('mouseout', () => {
+            leaf.style.animation = 'dance 3s ease-in-out infinite';
+            leaf.style.transform = 'none';
+        });
+    </script>
+</body>
+</html>
