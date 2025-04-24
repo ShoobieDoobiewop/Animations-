@@ -18,15 +18,16 @@
       height: 150px;
       position: relative;
       animation: dance 3s ease-in-out infinite;
+      cursor: pointer;
     }
     .maple-leaf path {
       fill: #c41e3a;
     }
     @keyframes dance {
-      0% { transform: rotate(0deg) scale(1); }
-      25% { transform: rotate(15deg) scale(1.1); }
-      50% { transform: rotate(0deg) scale(1); }
-      75% { transform: rotate(-15deg) scale(1.1); }
+      0%   { transform: rotate(0deg) scale(1); }
+      25%  { transform: rotate(15deg) scale(1.1); }
+      50%  { transform: rotate(0deg) scale(1); }
+      75%  { transform: rotate(-15deg) scale(1.1); }
       100% { transform: rotate(0deg) scale(1); }
     }
   </style>
@@ -38,29 +39,25 @@
 
   <script>
     const leaf = document.querySelector('.maple-leaf');
-    
-    leaf.addEventListener('mouseover', () => {
+
+    function animateLeaf() {
       leaf.style.animation = 'none';
       leaf.style.transform = 'scale(1.2) rotate(180deg)';
       leaf.style.transition = 'transform 0.5s ease';
-    });
+    }
 
-    leaf.addEventListener('mouseout', () => {
+    function resetLeaf() {
       leaf.style.animation = 'dance 3s ease-in-out infinite';
       leaf.style.transform = 'none';
-    });
+    }
 
-    // Add touch event listeners for mobile devices
-    leaf.addEventListener('touchstart', () => {
-      leaf.style.animation = 'none';
-      leaf.style.transform = 'scale(1.2) rotate(180deg)';
-      leaf.style.transition = 'transform 0.5s ease';
-    });
+    // Mouse events for desktop
+    leaf.addEventListener('mouseover', animateLeaf);
+    leaf.addEventListener('mouseout', resetLeaf);
 
-    leaf.addEventListener('touchend', () => {
-      leaf.style.animation = 'dance 3s ease-in-out infinite';
-      leaf.style.transform = 'none';
-    });
+    // Touch events for mobile
+    leaf.addEventListener('touchstart', animateLeaf);
+    leaf.addEventListener('touchend', resetLeaf);
   </script>
 </body>
 </html>
